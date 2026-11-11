@@ -9,7 +9,7 @@ export function SiteFooter() {
     <footer className="brand-footer" aria-label="Site footer">
       <div className="brand-footer-directory">
         <div className="brand-footer-identity">
-          <Link to={siteLinks.home} className="brand-footer-brand" aria-label="RicoUI home"><img src="/logo-style-1.png" width={36} height={36} alt="" />RicoUI</Link>
+          <Link to={siteLinks.home} className="brand-footer-brand" aria-label="RicoUI home"><img src="/logo-style.png" width={36} height={36} alt="" />RicoUI</Link>
           <p>{footerCopy.description[0]}<br />{footerCopy.description[1]}</p>
           <a className="brand-footer-credit" href={siteLinks.author} target="_blank" rel="noreferrer">{footerCopy.authorCredit} <Icon name="external" size={12} /></a>
         </div>

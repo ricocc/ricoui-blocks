@@ -737,7 +737,7 @@ html[data-theme=dark] .legacy-comparison { --background: #111824; --surface: #19
 .site-header.floating-header { position: fixed; z-index: 40; top: max(16px,env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); width: 1314px; max-width: calc(100% - 30px); border: 1px solid transparent; border-radius: 8px; background: transparent; transition: background-color 220ms, border-color 220ms, box-shadow 220ms; }
 .site-header.floating-header[data-surface=true] { border-color: color-mix(in srgb,var(--border) 80%,transparent); background: color-mix(in srgb,var(--surface) 48%,transparent); backdrop-filter: blur(18px) saturate(145%); -webkit-backdrop-filter: blur(18px) saturate(145%); box-shadow: 0 5px 20px #203e6009, inset 0 1px 0 #ffffff35; }
 .floating-header .header-inner { display: grid; grid-template-columns: 1fr auto 1fr; height: 56px; min-height: 0; gap: 24px; padding: 0 16px; max-width: none; }
-.floating-header .wordmark { width: fit-content; font-size: 21px; font-weight: 650; letter-spacing: -.8px; }
+.floating-header .wordmark { width: fit-content; font-size: 20px; font-weight: 650; letter-spacing: -.8px; }
 .floating-header .brand-symbol { width: 24px; height: 24px; }
 .floating-header .brand-tag { display: inline; margin-left: 10px; font: 10px var(--font-specimen); letter-spacing: .06em; color: var(--foreground-muted); }
 .floating-header .header-nav { width: auto; order: 0; gap: 28px; font-size: 13px; margin: 0; }
