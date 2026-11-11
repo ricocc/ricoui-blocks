@@ -1,0 +1,14 @@
+.brands-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 40px 24px; padding-top: 40px; }
+.brand-asset { min-width: 0; margin: 0; }
+.brand-asset-preview { display: grid; place-items: center; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border-subtle); border-radius: 8px; background: #f5f9ff; }
+.brand-asset-preview[data-surface=dark] { background: #0b1220; }
+.brand-asset-preview img { display: block; width: 60%; height: 60%; object-fit: contain; }
+.brand-asset-preview[data-surface=artwork] img { width: 100%; height: 100%; }
+.brand-asset-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; }
+.brand-asset-caption h2 { margin: 0; font-size: 15px; font-weight: 500; }
+.brand-asset-caption p { margin: 6px 0 0; font-size: 12px; color: var(--foreground-muted); }
+.brand-asset-download { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: 12px; color: var(--brand); }
+.brand-asset-download:hover { text-decoration: underline; text-underline-offset: 3px; }
+.brand-asset-download:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: 3px; }
+@media(max-width:1000px) { .brands-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .brands-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 28px; } }

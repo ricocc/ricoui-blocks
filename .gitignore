@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.output/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+worker-configuration.d.ts
+
+
+.tanstack
+.impeccable
+临时
+
+# Local build logs, one-off checks, screenshots, and consumer fixtures.
+/*.log
+/.*-check.mjs
+/.*-check-*.mjs
+/.*-qa.mjs
+/.*-qa-*.mjs
+/.qa-*.mjs
+/.*.png
+/.*.jpg
+/.*.webp
+/.*-consumer/
+/.tmp/

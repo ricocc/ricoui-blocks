@@ -1,0 +1,96 @@
+import type { CSSProperties } from 'react'
+
+const platforms = {
+  github: { label: 'GitHub', base: '#111115', glow: '#414149', accent: '#26262e', path: 'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12' },
+  twitter: { label: 'Twitter', base: '#0875bb', glow: '#b7e8ff', accent: '#5ac7ff', path: 'M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723 9.99 9.99 0 0 1-3.127 1.195 4.916 4.916 0 0 0-8.384 4.482A13.944 13.944 0 0 1 1.64 3.162a4.916 4.916 0 0 0 1.523 6.557A4.904 4.904 0 0 1 .936 9.103v.062a4.919 4.919 0 0 0 3.946 4.82 4.935 4.935 0 0 1-2.224.084 4.93 4.93 0 0 0 4.604 3.42 9.886 9.886 0 0 1-6.115 2.107c-.398 0-.79-.023-1.175-.069a13.933 13.933 0 0 0 7.548 2.213c9.057 0 14.01-7.503 14.01-14.01 0-.213-.005-.425-.014-.636a10.012 10.012 0 0 0 2.456-2.548z' },
+  behance: { label: 'Behance', base: '#074de5', glow: '#73adff', accent: '#1769ff', path: 'M16.969 16.927a2.561 2.561 0 0 0 1.901.677 2.501 2.501 0 0 0 1.531-.475c.362-.235.636-.584.779-.99h2.585a5.091 5.091 0 0 1-1.9 2.896 5.292 5.292 0 0 1-3.091.88 5.839 5.839 0 0 1-2.284-.433 4.871 4.871 0 0 1-1.723-1.211 5.657 5.657 0 0 1-1.08-1.874 7.057 7.057 0 0 1-.383-2.393c-.005-.8.129-1.595.396-2.349a5.313 5.313 0 0 1 5.088-3.604 4.87 4.87 0 0 1 2.376.563c.661.362 1.231.87 1.668 1.485a6.2 6.2 0 0 1 .943 2.133c.194.821.263 1.666.205 2.508h-7.699c-.063.79.184 1.574.688 2.187ZM6.947 4.084a8.065 8.065 0 0 1 1.928.198 4.29 4.29 0 0 1 1.49.638c.418.303.748.711.958 1.182.241.579.357 1.203.341 1.83a3.506 3.506 0 0 1-.506 1.961 3.726 3.726 0 0 1-1.503 1.287 3.588 3.588 0 0 1 2.027 1.437c.464.747.697 1.615.67 2.494a4.593 4.593 0 0 1-.423 2.032 3.945 3.945 0 0 1-1.163 1.413 5.114 5.114 0 0 1-1.683.807 7.135 7.135 0 0 1-1.928.259H0V4.084h6.947Zm-.235 12.9c.308.004.616-.029.916-.099a2.18 2.18 0 0 0 .766-.332c.228-.158.411-.371.534-.619.142-.317.208-.663.191-1.009a2.08 2.08 0 0 0-.642-1.715 2.618 2.618 0 0 0-1.696-.505h-3.54v4.279h3.471Zm13.635-5.967a2.13 2.13 0 0 0-1.654-.619 2.336 2.336 0 0 0-1.163.259 2.474 2.474 0 0 0-.738.62 2.359 2.359 0 0 0-.396.792c-.074.239-.12.485-.137.734h4.769a3.239 3.239 0 0 0-.679-1.785l-.002-.001Zm-13.813-.648a2.254 2.254 0 0 0 1.423-.433c.399-.355.607-.88.56-1.413a1.916 1.916 0 0 0-.178-.891 1.298 1.298 0 0 0-.495-.533 1.851 1.851 0 0 0-.711-.274 3.966 3.966 0 0 0-.835-.073H3.241v3.631h3.293v-.014ZM21.62 5.122h-5.976v1.527h5.976V5.122Z' },
+  dribbble: { label: 'Dribbble', base: '#d73579', glow: '#ffabd0', accent: '#ea4c89', path: 'M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.814zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702-1.81-1.61-4.19-2.586-6.795-2.586-.825 0-1.63.1-2.4.285zm10.335 3.483c-.218.29-1.935 2.493-5.724 4.04.24.49.47.985.68 1.486.08.18.15.36.22.53 3.41-.43 6.8.26 7.14.33-.02-2.42-.88-4.64-2.31-6.38z' },
+  email: { label: 'Email', base: '#1b6650', glow: '#c8e5d4', accent: '#5fa783', path: '' },
+} as const
+
+export type SocialPlatform = keyof typeof platforms
+
+export type SocialCardItem = {
+  platform: SocialPlatform
+  href: string
+  username: string
+  /** Override the platform name in the accessible link label. */
+  label?: string
+}
+
+export type SocialCardProps = {
+  items: SocialCardItem[]
+  /** Stack on hover-capable devices; grid is always spread out. */
+  layout?: 'stack' | 'grid'
+  /** Stack anchor and expansion direction. */
+  direction?: 'left' | 'center' | 'right'
+  /** Card size in pixels, clamped to 64–240; stacked cards shrink to fit their container. */
+  size?: number
+  className?: string
+  style?: CSSProperties
+  'aria-label'?: string
+}
+
+const socialCardCss = `
+[data-rico-social] { width: 100%; min-width: 0; container: rico-social / inline-size; }
+[data-rico-social] *, [data-rico-social] *::before, [data-rico-social] *::after { box-sizing: border-box; }
+[data-rico-social] .sc-list { --sc-card-size: var(--sc-size); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 13px; min-height: calc(var(--sc-card-size) + 64px); margin: 0; padding: 32px 16px; list-style: none; }
+[data-rico-social] .sc-item { position: relative; flex: 0 0 var(--sc-card-size); width: var(--sc-card-size); height: var(--sc-card-size); margin: 0; padding: 0; z-index: calc(var(--sc-count) - var(--sc-index)); transition: transform 600ms cubic-bezier(.34,1.2,.64,1) calc(var(--sc-index) * 30ms); }
+[data-rico-social] .sc-card { position: relative; isolation: isolate; display: block; width: 100%; height: 100%; overflow: hidden; border: 0; border-radius: 16.667%; background: linear-gradient(160deg,var(--sc-accent),var(--sc-base) 90%); color: #fff; text-decoration: none; box-shadow: 0 2px 4px #07111a18,0 7px 14px -5px color-mix(in srgb,var(--sc-base) 16%,transparent),inset 0 1px 1px #ffffff66; transition: box-shadow 320ms ease; }
+[data-rico-social] .sc-card::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; opacity: .16; mix-blend-mode: soft-light; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+[data-rico-social] .sc-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(135deg,#ffffff35,transparent 48%,#00000018); box-shadow: inset 0 0 0 1px #ffffff12; }
+[data-rico-social] .sc-glow { position: absolute; z-index: -2; inset: -35%; pointer-events: none; background: radial-gradient(ellipse at 24% 30%,var(--sc-glow),transparent 55%),radial-gradient(ellipse at 88% 95%,var(--sc-accent),transparent 55%); filter: blur(14px); transform: rotate(-18deg); opacity: .6; transition: transform 400ms cubic-bezier(.34,1.56,.64,1); }
+[data-rico-social] .sc-icon { position: absolute; top: 14%; left: 14%; width: 23%; height: 23%; overflow: visible; filter: drop-shadow(1px 3px 2px #00000030); }
+[data-rico-social] [data-platform=email] .sc-icon { color: #e0f7e9; }
+[data-rico-social] .sc-username { position: absolute; right: 8%; bottom: 8.333%; left: 8.333%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 max(7px, calc(var(--sc-card-size) * .1111))/1.2 ui-sans-serif,system-ui,sans-serif; letter-spacing: -.015em; text-align: left; text-shadow: 0 1px 3px #00000040; }
+[data-rico-social] .sc-card:focus-visible { outline: 3px solid var(--sc-accent); outline-offset: 5px; border-color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  [data-rico-social] .sc-item:is(:hover,:focus-within) { transform: translateY(-10px) rotate(-6deg) scale(1.05); transition: transform 350ms cubic-bezier(.34,1.5,.64,1); }
+  [data-rico-social] .sc-item:is(:hover,:focus-within) .sc-card { box-shadow: 0 5px 12px -5px #07111a20,0 12px 22px -8px color-mix(in srgb,var(--sc-accent) 20%,transparent),inset 0 1px 1px #ffffff66; }
+  [data-rico-social] .sc-item:is(:hover,:focus-within) .sc-glow { transform: rotate(-18deg) scale(1.15); }
+  [data-rico-social][data-layout=stack] .sc-list { --sc-card-size: min(var(--sc-size), max(32px, calc((100cqw - 32px - (var(--sc-count) - 1) * 13px) / var(--sc-count)))); position: relative; width: min(100%,calc(var(--sc-count) * (var(--sc-card-size) + 13px) + 19px)); margin-inline: auto; }
+  /* Only visible cards start expansion; the list bridges gaps once open. */
+  [data-rico-social][data-layout=stack] .sc-list { pointer-events: none; }
+  [data-rico-social][data-layout=stack] .sc-card { pointer-events: auto; }
+  [data-rico-social][data-layout=stack] .sc-list:is(:hover,:focus-within) { pointer-events: auto; }
+  [data-rico-social][data-layout=stack] .sc-item { position: absolute; left: var(--sc-anchor, 50%); top: 32px; --sc-offset: var(--sc-center-offset); transform: translateX(calc(var(--sc-shift, -50%) + var(--sc-offset) * 3px)) rotate(calc(var(--sc-offset) * 5deg)); }
+  [data-rico-social][data-direction=left] .sc-item { --sc-anchor: 16px; --sc-shift: 0%; --sc-offset: var(--sc-index); }
+  [data-rico-social][data-direction=right] .sc-item { --sc-anchor: calc(100% - 16px); --sc-shift: -100%; --sc-offset: calc(0 - var(--sc-index)); }
+  [data-rico-social][data-layout=stack] .sc-list:is(:hover,:focus-within) .sc-item { transform: translateX(calc(var(--sc-shift, -50%) + var(--sc-offset) * (var(--sc-card-size) + 13px))); transition: transform 600ms cubic-bezier(.34,1.2,.64,1) calc(var(--sc-index) * 30ms); }
+  [data-rico-social][data-layout=stack] .sc-list:is(:hover,:focus-within) .sc-item:is(:hover,:focus-within) { transform: translateX(calc(var(--sc-shift, -50%) + var(--sc-offset) * (var(--sc-card-size) + 8px))) translateY(-10px) rotate(-6deg) scale(1.05); transition: transform 350ms cubic-bezier(.34,1.5,.64,1); }
+  [data-rico-social][data-layout=stack][data-direction=center] .sc-list:is(:hover,:focus-within) .sc-item:first-child:is(:hover,:focus-within) { transform: translateX(-50%) translateY(-8px); }
+}
+@media (hover: none) { [data-rico-social] .sc-card:active { transform: scale(.95); } }
+@media (prefers-reduced-motion: reduce) {
+  [data-rico-social][data-layout] .sc-list .sc-item { position: relative; inset: auto; transform: none; transition: none; }
+  [data-rico-social] .sc-card, [data-rico-social] .sc-card:active, [data-rico-social] .sc-icon, [data-rico-social] .sc-glow { transform: none !important; transition: none; }
+}
+`
+
+export function SocialCard({ items, layout = 'stack', direction = 'center', size = 120, className, style, 'aria-label': label = 'Social links' }: SocialCardProps) {
+  if (!items.length) return null
+  const cardSize = Number.isFinite(size) ? Math.min(240, Math.max(64, size)) : 120
+
+  return (
+    <div data-rico-social="" data-layout={layout} data-direction={direction} className={className} style={{ '--sc-size': `${cardSize}px`, '--sc-count': items.length, ...style } as CSSProperties}>
+      <style>{socialCardCss}</style>
+      <ul className="sc-list" aria-label={label}>
+        {items.map((item, index) => {
+          const platform = platforms[item.platform]
+          const username = item.username.replace(/^@/, '')
+          const mail = item.href.startsWith('mailto:') || item.href.startsWith('tel:')
+          const centerOffset = index === 0 ? 0 : Math.ceil(index / 2) * (index % 2 === 1 ? -1 : 1)
+          return <li className="sc-item" data-platform={item.platform} key={item.platform + ':' + item.href} style={{ '--sc-index': index, '--sc-center-offset': centerOffset, '--sc-base': platform.base, '--sc-glow': platform.glow, '--sc-accent': platform.accent } as CSSProperties}>
+            <a className="sc-card" href={item.href} target={mail ? undefined : '_blank'} rel={mail ? undefined : 'noopener noreferrer'} aria-label={`${item.label || platform.label}: @${username}`}>
+              <span className="sc-glow" aria-hidden="true" />
+              <svg className="sc-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                {item.platform === 'email' ? <g fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="3" /><path d="m3.5 6 8.5 7 8.5-7" /></g> : <path fill="currentColor" d={platform.path} />}
+              </svg>
+              <span className="sc-username">@{username}</span>
+            </a>
+          </li>
+        })}
+      </ul>
+    </div>
+  )
+}

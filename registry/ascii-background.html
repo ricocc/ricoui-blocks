@@ -1,0 +1,230 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>蓝色潮汐 · ASCII 水流</title>
+  <style>
+    :root { color-scheme: light; background: #ffffff; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { background: #ffffff; }
+    canvas { position: fixed; inset: 0; display: block; width: 100%; height: 100%; }
+    .controls { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 8px; opacity: 0; transition: opacity .3s ease; }
+    body:hover .controls, .controls:focus-within { opacity: 1; }
+    button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #2d6dc320; background: #ffffffc7; color: #2d6dc3; backdrop-filter: blur(12px); cursor: pointer; display: grid; place-items: center; transition: background .2s ease, transform .2s ease; }
+    button:hover { background: #ffffff; transform: translateY(-2px); }
+    button:focus-visible { outline: 2px solid #2d6dc3; outline-offset: 4px; }
+    svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; } :root, body { background: #111824; } button { background: #192231c7; color: #8fb9ff; border-color: #8fb9ff30; } button:hover { background: #192231; } }
+    @media (hover: none) { .controls { opacity: .7; bottom: 16px; right: 16px; } }
+    @media (prefers-reduced-motion: reduce) { .controls, button { transition: none; } }
+  </style>
+</head>
+<body>
+  <canvas id="background" role="img" aria-label="纯白色背景上，细小蓝色 ASCII 点阵闪烁流动，鼠标划过产生散开与水波扰动"></canvas>
+  <div class="controls" aria-label="背景动画控制">
+    <button id="pause" type="button" title="暂停动画" aria-label="暂停动画" aria-pressed="false"><svg viewBox="0 0 20 20"><path d="M7 5v10M13 5v10"/></svg></button>
+    <button id="fullscreen" type="button" title="全屏显示" aria-label="全屏显示"><svg viewBox="0 0 20 20"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg></button>
+  </div>
+  <script>(() => {
+  'use strict';
+  let canvas = document.getElementById('background');
+  const pause = document.getElementById('pause');
+  const fullscreen = document.getElementById('fullscreen');
+  const gl = canvas.getContext('webgl', { alpha:false, antialias:false, depth:false, stencil:false, powerPreference:'low-power' });
+  let width=1, height=1, dpr=1, count=0, paused=matchMedia('(prefers-reduced-motion: reduce)').matches, frame=0, elapsed=0, previous=0;
+  const colorScheme=matchMedia('(prefers-color-scheme: dark)');
+  let dark=colorScheme.matches;
+  const trail = new Float32Array(24);
+  for(let i=0;i<6;i++) trail[i*4+2]=-100;
+  let trailIndex=0, lastWake=-1, lastPointer=null, gpu=null, fallback=null;
+  let fallbackSeeds=[];
+  const vertex = `
+  precision highp float;
+  attribute vec2 a_position;
+  attribute vec4 a_random;
+  uniform vec2 u_size;
+  uniform float u_time, u_dpr;
+  uniform vec4 u_wake[6];
+  varying float v_density, v_type, v_bloom;
+  float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  void main(){
+    float t=u_time*.52;
+    vec2 p=a_position;
+    vec2 uv=p/u_size;
+    float eddy=.84+.11*sin(uv.x*6.0+uv.y*4.2-t*.8)
+                  +.05*cos(uv.y*7.2-uv.x*3.5+t*.6);
+    float density=eddy;
+    float seed=a_random.x;
+    density*=.965+.035*sin(u_time*.85+seed*28.);
+    vec2 flow=vec2(sin(uv.y*9.+t*1.4),cos(uv.x*8.-t))*5.;
+    vec2 displacement=vec2(0.);
+    for(int i=0;i<6;i++){
+      vec4 wake=u_wake[i];
+      float age=u_time-wake.z;
+      if(age>=0. && age<.6){
+        vec2 delta=p-wake.xy;
+        float distance=length(delta);
+        vec2 direction=delta/max(distance,1.);
+        // Each wake starts at zero and retires before its slot is reused.
+        float envelope=smoothstep(0.,.12,age)*(1.-smoothstep(.32,.6,age))*wake.w;
+        float push=exp(-distance*distance/(95.*95.))*exp(-age*3.3)*envelope;
+        float band=(distance-age*110.)/25.;
+        float ripple=sin(band*2.)*exp(-band*band)*exp(-age*1.8)*envelope;
+        displacement+=direction*(push*25.+ripple*9.);
+      }
+    }
+    // Smooth saturation prevents overlapping wakes from throwing glyphs around.
+    displacement/=1.+length(displacement)/24.;
+    p+=flow+displacement;
+    gl_Position=vec4(p/u_size*vec2(2.,-2.)+vec2(-1.,1.),0.,1.);
+    gl_PointSize=6.*u_dpr;
+    v_density=density;
+    // Each location has its own clock. New selections are made only while
+    // the accent is invisible, avoiding synchronized swaps or flashing.
+    float clock=u_time/(8.+a_random.y*6.)+seed*19.;
+    float cycle=floor(clock);
+    float phase=fract(clock);
+    float selected=step(.94,hash(vec2(a_random.z*913.7,cycle*37.1)));
+    v_bloom=selected*smoothstep(.06,.27,phase)*(1.-smoothstep(.63,.91,phase));
+    v_type=floor(hash(vec2(a_random.w*871.3,cycle*43.7))*4.);
+  }`;
+  const fragment = `
+  precision mediump float;
+  uniform vec3 u_ink;
+  varying float v_density, v_type, v_bloom;
+  void main(){
+    vec2 p=(gl_PointCoord-.5)*6.;
+    float dotShape=1.-smoothstep(.52,.95,length(p));
+    p/=mix(.38,1.,v_bloom);
+    float shape;
+    if(v_type<.5){shape=1.-smoothstep(1.05,1.45,length(p));}
+    else if(v_type<1.5){shape=1.-smoothstep(.44,.82,length(vec2(p.x,abs(p.y)-1.25)));}
+    else {
+      float cross=min(max(abs(p.x)-.43,abs(p.y)-1.9),max(abs(p.x)-1.9,abs(p.y)-.43));
+      if(v_type>2.5) cross=min(cross,max(abs(abs(p.x)-abs(p.y))-.36,max(abs(p.x),abs(p.y))-1.45));
+      shape=1.-smoothstep(0.,.4,cross);
+    }
+    shape=mix(dotShape,shape,v_bloom);
+    float alpha=shape*v_density*.46;
+    if(alpha<.015) discard;
+    gl_FragColor=vec4(u_ink,alpha);
+  }`;
+  function shader(type, source){
+    const s=gl.createShader(type); gl.shaderSource(s,source); gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw Error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  function setup(){
+    const program=gl.createProgram();
+    gl.attachShader(program,shader(gl.VERTEX_SHADER,vertex));
+    gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragment)); gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS)) throw Error(gl.getProgramInfoLog(program));
+    gl.useProgram(program);
+    const buffer=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+    const pos=gl.getAttribLocation(program,'a_position'); gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos,2,gl.FLOAT,false,24,0);
+    const random=gl.getAttribLocation(program,'a_random'); gl.enableVertexAttribArray(random); gl.vertexAttribPointer(random,4,gl.FLOAT,false,24,8);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(1,1,1,1);
+    gpu={buffer,ink:gl.getUniformLocation(program,'u_ink'),size:gl.getUniformLocation(program,'u_size'),time:gl.getUniformLocation(program,'u_time'),dpr:gl.getUniformLocation(program,'u_dpr'),wake:gl.getUniformLocation(program,'u_wake[0]')};
+  }
+  function resize(){
+    width=innerWidth; height=innerHeight; dpr=Math.min(devicePixelRatio||1,1.5);
+    canvas.width=Math.round(width*dpr); canvas.height=Math.round(height*dpr);
+    if(gpu){
+      gl.viewport(0,0,canvas.width,canvas.height);
+      const step=Math.max(8,Math.sqrt(width*height/22000));
+      const data=[];
+      // Independent random attributes are uploaded once, never derived from
+      // grid coordinates. This avoids diagonal bands of synchronized accents.
+      for(let y=-16;y<height+16;y+=step) for(let x=-16;x<width+16;x+=step) data.push(x,y,Math.random(),Math.random(),Math.random(),Math.random());
+      count=data.length/6;
+      gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+      gl.uniform2f(gpu.size,width,height); gl.uniform1f(gpu.dpr,dpr);
+    }else{
+      fallback.setTransform(dpr,0,0,dpr,0,0);
+      const step=Math.max(10,Math.sqrt(width*height/6500));
+      fallbackSeeds=Array.from({length:Math.ceil(width/step)*Math.ceil(height/step)},()=>[Math.random(),Math.random(),Math.random()]);
+    }
+    render();
+  }
+  function render(){
+    if(gpu){
+      gl.clearColor(...(dark?[17/255,24/255,36/255,1]:[1,1,1,1])); gl.uniform3f(gpu.ink,...(dark?[143/255,185/255,1]:[45/255,109/255,195/255]));
+      gl.clear(gl.COLOR_BUFFER_BIT); gl.uniform1f(gpu.time,elapsed); gl.uniform4fv(gpu.wake,trail);
+      gl.drawArrays(gl.POINTS,0,count);
+    }else{
+      // Lightweight fallback for devices without WebGL: one batched path.
+      fallback.fillStyle=dark?'#111824':'#fff'; fallback.fillRect(0,0,width,height); fallback.fillStyle=dark?'rgba(143,185,255,.6)':'rgba(45,109,195,.46)'; fallback.beginPath();
+      const step=Math.max(10,Math.sqrt(width*height/6500)), t=elapsed*.52;
+      const ease=value=>{const q=Math.max(0,Math.min(1,value));return q*q*(3-2*q);};
+      const wakes=[];
+      for(let i=0;i<6;i++){
+        const age=elapsed-trail[i*4+2];
+        if(age<0||age>=.6)continue;
+        const strength=ease(age/.12)*(1-ease((age-.32)/.28))*Math.exp(-age*3.3)*trail[i*4+3];
+        wakes.push({x:trail[i*4],y:trail[i*4+1],strength});
+      }
+      let index=0;
+      for(let y=0;y<height;y+=step) for(let x=0;x<width;x+=step){
+        const random=fallbackSeeds[index++];
+        const u=x/width,v=y/height;
+        const density=.84+.11*Math.sin(u*6+v*4.2-t*.8)+.05*Math.cos(v*7.2-u*3.5+t*.6);
+        let px=x+Math.sin(y/height*9+t*1.7)*8,py=y+Math.cos(x/width*8-t*1.3)*8;
+        let displacementX=0,displacementY=0;
+        for(const wake of wakes){
+          const dx=x-wake.x,dy=y-wake.y,distance=Math.hypot(dx,dy)||1;
+          const push=25*Math.exp(-distance*distance/9025)*wake.strength;
+          displacementX+=dx/distance*push;displacementY+=dy/distance*push;
+        }
+        const saturation=1+Math.hypot(displacementX,displacementY)/24;
+        px+=displacementX/saturation;py+=displacementY/saturation;
+        const clock=elapsed/(8+random[1]*6)+random[0]*19,cycle=Math.floor(clock),phase=clock-cycle;
+        const selection=Math.sin(random[2]*913.7*127.1+cycle*37.1*311.7)*43758.5453;
+        const ease=q=>{q=Math.max(0,Math.min(1,q));return q*q*(3-2*q);};
+        const bloom=(selection-Math.floor(selection)>.94?1:0)*ease((phase-.06)/.21)*(1-ease((phase-.63)/.28));
+        const radius=Math.max(.2,Math.min(.7,density*.7))*(1+bloom*1.1);
+        fallback.moveTo(px+radius,py);fallback.arc(px,py,radius,0,Math.PI*2);
+      }
+      fallback.fill();
+    }
+  }
+  function tick(now){
+    frame=0;
+    if(paused||document.hidden){previous=0;return;}
+    if(previous) elapsed+=Math.min((now-previous)/1000,.05);
+    previous=now;render();frame=requestAnimationFrame(tick);
+  }
+  function start(){if(!frame&&!paused&&!document.hidden) frame=requestAnimationFrame(tick);}
+  function button(){pause.title=paused?'播放动画':'暂停动画';pause.setAttribute('aria-label',pause.title);pause.setAttribute('aria-pressed',String(paused));pause.innerHTML=paused?'<svg viewBox="0 0 20 20"><path d="m7 4 9 6-9 6Z"/></svg>':'<svg viewBox="0 0 20 20"><path d="M7 5v10M13 5v10"/></svg>';}
+  pause.addEventListener('click',()=>{paused=!paused;previous=0;button();start();});
+  fullscreen.hidden=!document.fullscreenEnabled;
+  fullscreen.addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{fullscreen.hidden=true;}});
+  window.addEventListener('pointermove',e=>{
+    if(paused||e.target.closest('.controls'))return;
+    if(elapsed-lastWake>.1){
+      const i=trailIndex*4; trail[i]=e.clientX;trail[i+1]=e.clientY;trail[i+2]=elapsed;const speed=lastPointer?Math.hypot(e.clientX-lastPointer.x,e.clientY-lastPointer.y)/Math.max(.016,elapsed-lastPointer.at):0;trail[i+3]=Math.max(.35,1/(1+speed/1400));
+      trailIndex=(trailIndex+1)%6;lastWake=elapsed;
+    }
+    lastPointer={x:e.clientX,y:e.clientY,at:elapsed};
+  },{passive:true});
+  document.addEventListener('visibilitychange',()=>{previous=0;start();});
+  window.addEventListener('resize',resize,{passive:true});
+  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;button();});
+  canvas.addEventListener('webglcontextrestored',()=>location.reload());
+  try{if(gl)setup();}catch(error){console.error('WebGL initialization failed',error);}
+  if(!gpu){const replacement=canvas.cloneNode();canvas.replaceWith(replacement);canvas=replacement;fallback=canvas.getContext('2d',{alpha:false});}
+  // Minimal read-only diagnostics for browser verification.
+  window.backgroundStats=()=>({renderer:gpu?'WebGL':'Canvas fallback',particles:count,time:elapsed,paused});
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  reducedMotion.addEventListener('change',()=>{paused=reducedMotion.matches;previous=0;button();start();});
+  colorScheme.addEventListener('change',()=>{dark=colorScheme.matches;render();});
+  resize();button();start();
+})();
+</script>
+</body>
+</html>
+
+
+

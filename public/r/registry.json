@@ -1,0 +1,246 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ricoui",
+  "homepage": "https://blocks.ricoui.com",
+  "items": [
+    {
+      "name": "github-repo",
+      "type": "registry:ui",
+      "title": "GitHub Repo",
+      "description": "Dither Pop repository card with vector badge and tactile motion.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/github-repo.tsx",
+          "type": "registry:ui",
+          "target": "@ui/github-repo.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bell-button",
+      "type": "registry:ui",
+      "title": "Bell Button",
+      "description": "A beveled notification button with an optional count badge, muted bell, and busy arc.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/bell-button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/ricoui/bell-button.tsx"
+        },
+        {
+          "path": "registry/button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/ricoui/button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "A native button in the RicoUI palette with light and dark themes.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dither-progress",
+      "type": "registry:ui",
+      "title": "Dither Progress",
+      "description": "Horizontal Dither Pop progress bar with animated halftone fill and a lightning badge.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/dither-progress.tsx",
+          "type": "registry:ui",
+          "target": "@ui/dither-progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "flip-switch",
+      "type": "registry:ui",
+      "title": "Flip Switch",
+      "description": "A horizontal Dither Pop rocker with a spring pivot, halftone housing and animated feedback rays.",
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/flip-switch.tsx",
+          "type": "registry:ui",
+          "target": "@ui/flip-switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "magnifier",
+      "type": "registry:ui",
+      "title": "Magnifier",
+      "description": "Interactive projected optical magnifier with React configuration and no bundled background.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/magnifier.tsx",
+          "type": "registry:ui",
+          "target": "@ui/magnifier.tsx"
+        }
+      ]
+    },
+    {
+      "name": "file-organizer",
+      "type": "registry:ui",
+      "title": "File Organizer",
+      "description": "An interactive layered file box with halftone surfaces and staggered folder motion.",
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/file-organizer.tsx",
+          "type": "registry:ui",
+          "target": "@ui/file-organizer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "contribution-graph",
+      "type": "registry:ui",
+      "title": "Contribution Graph",
+      "description": "Blue-gray dither contribution calendar.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/contribution-graph.tsx",
+          "type": "registry:ui",
+          "target": "@ui/contribution-graph.tsx"
+        }
+      ]
+    },
+    {
+      "name": "github-contributions",
+      "type": "registry:lib",
+      "title": "GitHub Contributions",
+      "description": "Server-side GitHub contribution calendar helper with optional cache and rate-limit handling.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/github-contributions.ts",
+          "type": "registry:lib",
+          "target": "@lib/github-contributions.ts"
+        }
+      ]
+    },
+    {
+      "name": "empty-states",
+      "type": "registry:ui",
+      "title": "Empty States",
+      "description": "Twelve original porcelain instrument-panel empty states with engraved symbols, recessed surfaces and mechanical micro-animations.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/empty-states.tsx",
+          "type": "registry:ui",
+          "target": "@ui/empty-states.tsx"
+        }
+      ]
+    },
+    {
+      "name": "kubai-empty-states",
+      "type": "registry:ui",
+      "title": "Kubai Empty States",
+      "description": "Twelve self-contained SVG empty states inspired by Kubai and Lumno, with light, dark, and auto themes.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/kubai-empty-states.tsx",
+          "type": "registry:ui",
+          "target": "@ui/kubai-empty-states.tsx"
+        }
+      ]
+    },
+    {
+      "name": "popin-preloader",
+      "type": "registry:ui",
+      "title": "Popin Preloader",
+      "description": "A two-tone loading sweep with elastic ready letters and a curtain exit.",
+      "dependencies": [
+        "gsap"
+      ],
+      "files": [
+        {
+          "path": "registry/popin-preloader.tsx",
+          "type": "registry:ui",
+          "target": "@ui/popin-preloader.tsx"
+        }
+      ]
+    },
+    {
+      "name": "clip-image-preloader",
+      "type": "registry:ui",
+      "title": "Clip Image Preloader",
+      "description": "A logo and counter followed by a clipped image montage and upward exit.",
+      "dependencies": [
+        "gsap"
+      ],
+      "files": [
+        {
+          "path": "registry/clip-image-preloader.tsx",
+          "type": "registry:ui",
+          "target": "@ui/clip-image-preloader.tsx"
+        }
+      ]
+    },
+    {
+      "name": "step-overlap-preloader",
+      "type": "registry:ui",
+      "title": "Step Overlap Preloader",
+      "description": "Blurred letter reveals and three staggered white, cream, and orange curtains.",
+      "dependencies": [
+        "gsap"
+      ],
+      "files": [
+        {
+          "path": "registry/step-overlap-preloader.tsx",
+          "type": "registry:ui",
+          "target": "@ui/step-overlap-preloader.tsx"
+        }
+      ]
+    },
+    {
+      "name": "social-card",
+      "type": "registry:ui",
+      "title": "Social Card",
+      "description": "Social links with code-rendered gradients, blur, grain, and an accessible hover-to-spread stack.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/social-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/social-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ascii-background",
+      "type": "registry:ui",
+      "title": "ASCII Background",
+      "description": "An interactive blue ASCII current background with WebGL and Canvas fallback.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/ascii-background.tsx",
+          "type": "registry:ui",
+          "target": "@ui/ascii-background.tsx"
+        }
+      ]
+    }
+  ]
+}
