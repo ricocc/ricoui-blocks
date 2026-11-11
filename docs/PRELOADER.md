@@ -30,6 +30,8 @@
 
 三个组件各有独立 Preview、详情页、源码和 Registry JSON，无样式切换器。官网使用全画布预览，避免额外边距改变构图。预览进度与重播逻辑共用官网专用 `preloader-preview-frame.tsx`，不进入 Registry。七张 `/images/preloader/001.jpg` 至 `007.jpg` 仅供官网演示，不随组件分发。
 
+七张演示照片来自 [cottonbro studio 的 Pexels 合集](https://www.pexels.com/zh-cn/@cottonbro/collections/)，按 [Pexels License](https://www.pexels.com/license/) 用于官网预览；Pexels 不要求署名。它们不是 RicoUI 自有素材，使用组件源码的项目应提供自己的图片。
+
 详情页在动画期间隐藏底部安装条，避免遮住右下角百分比；退出后恢复。右上角的信息和源码入口始终可用。
 
 源码各自独立：`registry/popin-preloader.tsx`、`registry/clip-image-preloader.tsx`、`registry/step-overlap-preloader.tsx`。每个安装入口只分发对应一个文件及其 `gsap` 依赖。
