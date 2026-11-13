@@ -345,7 +345,7 @@ Source ↗
 ## Shared configuration panels (2026-11-07)
 
 - Existing configuration panels share compact 36px field rows, 26px text/select controls, small switches, a Customize header with Reset, and a persistent Copy prompt footer. Theme controls and the contribution palette use the same shell; mobile panel width and available height remain bounded.
-- Each caller passes an explicit typed configuration snapshot to PreviewControls. The prompt includes component/source, current JSON values and instructions to update consumer props/styles without adding website controls or changing unrelated behavior. No DOM-label scraping or generated Registry defaults.
+- Each caller passes an explicit configuration snapshot to PreviewControls. The prompt includes one instruction to update the component usage, its public Registry URL, JSON props for the current settings, and a short integration note when needed. Include values derived from panel settings, such as Magnifier's radius factor and damping, so the copied configuration reproduces the settings.
 - Copy prompt reuses clipboard fallback and success/error feedback. Pointer-down captures the visible configuration before outside-click interactions can collapse a preview; keyboard activation uses current values.
 - File Organizer exposes all four labels, defaults to Guidelines, and maps the current expanded state to defaultOpen with controlled-usage guidance. Other panels serialize their actual theme, labels, sizes, layout, duration, disabled/paused values or CSS-variable palette. Components without settings do not receive invented controls.
 

@@ -62,11 +62,11 @@ function Detail({ component }: { component: ComponentMeta }) {
   const codeHeading = useRef<HTMLHeadingElement>(null)
   const infoTrigger = useRef<HTMLButtonElement>(null)
   const codeTrigger = useRef<HTMLButtonElement>(null)
-  const configuration: Record<string, unknown> = isEmptyStates ? { theme: previewTheme }
+  const configuration = isEmptyStates ? { theme: previewTheme }
     : isButton ? { theme: previewTheme, disabled }
     : component.slug === 'social-card' ? { size: socialSize, layout: socialLayout, direction: socialDirection }
     : component.slug === 'ascii-background' ? { theme, paused: disabled }
-    : {}
+    : null
   const source = getSourceCode(component.slug) || ''
   const install = installCommand(component.slug, manager)
 
@@ -112,7 +112,7 @@ function Detail({ component }: { component: ComponentMeta }) {
         <div className="preview-stage"><Suspense fallback={<PreviewLoading />}><div className={'live-specimen' + (component.slug === 'ascii-background' ? ' live-specimen--background' : '') + (component.category === 'preloader' ? ' live-specimen--preloader' : '')} key={iteration}>
           {isButton ? <ButtonPreview disabled={disabled} /> : component.slug === 'empty-states' ? <EmptyStatesPreview theme={previewTheme} /> : component.slug === 'kubai-empty-states' ? <KubaiEmptyStatesPreview theme={previewTheme} /> : component.slug === 'social-card' ? <SocialCardPreview size={socialSize} layout={socialLayout} direction={socialDirection} /> : component.slug === 'ascii-background' ? <AsciiBackground theme={theme} paused={disabled} style={{ minHeight: 0 }} /> : <ComponentPreview slug={component.slug} />}
         </div></Suspense></div>
-        {component.category !== 'preloader' && !['dither-progress', 'flip-switch','magnifier','file-organizer','contribution-graph'].includes(component.slug) && <PreviewControls prompt={{ component: component.name, source: component.registryFile ?? component.slug, values: configuration }} onReset={resetPreview}>
+        {configuration && <PreviewControls prompt={{ component: component.name, slug: component.slug, values: configuration }} onReset={resetPreview}>
           <div className="preview-settings">
             {(isEmptyStates || isButton) && <PreviewThemeControl value={previewTheme} onChange={setPreviewTheme} />}
             {component.slug === 'social-card' && <><label>Layout<select aria-label="Layout" value={socialLayout} onChange={event => setSocialLayout(event.target.value as 'stack' | 'grid')}><option value="stack">Stack</option><option value="grid">Grid</option></select></label><label>Direction<select aria-label="Direction" value={socialDirection} onChange={event => setSocialDirection(event.target.value as 'left' | 'center' | 'right')}><option value="left">left</option><option value="center">center</option><option value="right">right</option></select></label><label>Card size <output>{socialSize}px</output><input type="range" min="64" max="240" step="4" value={socialSize} onChange={event => setSocialSize(Number(event.target.value))} /></label></>}

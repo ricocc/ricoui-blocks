@@ -49,9 +49,18 @@ export default function MagnifierPreview() {
   const [preview,setPreview]=useState<HTMLElement|null>(null)
   useEffect(()=>{setPreview(root.current?.closest<HTMLElement>('.detail-preview')??null)},[])
   useEffect(()=>{if(!preview)return;preview.dataset.previewTheme=theme;return()=>{delete preview.dataset.previewTheme}},[preview,theme])
+  const { magnification, maxRadius, radiusFactor, bezelWidth, housingDepth } = lens
+  const { maxTilt, positionStiffness, positionDamping, tiltSpeedScale, pressScale, homeStiffness, homeDamping, shadowStrength, shadowSoftness, glareStrength } = motion
+  const values = {
+    theme,
+    returnToCenter,
+    lens: { magnification, maxRadius, radiusFactor, bezelWidth, housingDepth },
+    motion: { maxTilt, positionStiffness, positionDamping, tiltSpeedScale, pressScale, homeStiffness, homeDamping, shadowStrength, shadowSoftness, glareStrength },
+    palette: { accent: palette.accent },
+  }
   return <div ref={root} className="magnifier-preview">
     <Magnifier style={{height:'100%',minHeight:0,aspectRatio:'auto'}} theme={theme} lens={lens} motion={motion} palette={palette} returnToCenter={returnToCenter} drawContent={drawSpecimen} contentVersion={fontVersion} />
-    {preview && createPortal(<PreviewControls prompt={{component:'Magnifier',source:'registry/magnifier.tsx',values:{theme,lens,motion,palette,returnToCenter},notes:'Preserve the consumer drawContent callback. The website specimen text, artwork and configuration panel are preview-only; do not copy them into the component.'}} onReset={()=>{setTheme('light');setLens({...magnifierDefaults.lens});setMotion({...magnifierDefaults.motion});setPalette({...magnifierDefaults.palette});setReturn(true)}}>
+    {preview && createPortal(<PreviewControls prompt={{ component: 'Magnifier', slug: 'magnifier', values, notes: 'Merge these options and keep the existing `drawContent` callback.' }} onReset={()=>{setTheme('light');setLens({...magnifierDefaults.lens});setMotion({...magnifierDefaults.motion});setPalette({...magnifierDefaults.palette});setReturn(true)}}>
       <div className="preview-settings">
         <PreviewThemeControl value={theme} onChange={setTheme} />
         <label className="checkbox-label"><input type="checkbox" checked={returnToCenter} onChange={event=>setReturn(event.target.checked)} /> Return to center</label>

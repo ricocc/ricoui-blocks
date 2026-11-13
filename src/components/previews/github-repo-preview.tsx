@@ -32,7 +32,7 @@ export default function GithubRepoPreview() {
   return <div ref={root} className="mx-auto w-full max-w-[620px] p-3">
     <GithubRepo {...values} />
     {preview && createPortal(
-      <PreviewControls prompt={{ component: 'GithubRepo', source: 'registry/github-repo.tsx', values }} onReset={() => setValues(defaults)}>
+      <PreviewControls prompt={{ component: 'GithubRepo', slug: 'github-repo', values }} onReset={() => setValues(defaults)}>
         <div className="preview-settings">
           <label>Owner<input value={values.owner} onInput={event => updateText('owner', event.currentTarget.value)} /></label>
           <label>Repository<input value={values.name} onInput={event => updateText('name', event.currentTarget.value)} /></label>

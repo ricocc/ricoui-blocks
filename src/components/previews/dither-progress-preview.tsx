@@ -31,7 +31,7 @@ export default function DitherProgressPreview() {
       <span aria-hidden="true" />
       {[0, 25, 50, 75, 100].map(step => <button key={step} type="button" aria-pressed={value === step} onClick={() => { setPlaying(false); setValue(step) }}>{step}%</button>)}
     </div>
-    {preview && createPortal(<PreviewControls onReset={reset} prompt={{ component: 'DitherProgress', source: 'registry/dither-progress.tsx', values: { value, size, animated, baseColor, fillColor, highlightColor }, notes: 'Pass real progress from 0 to 100. Demo playback and preview theme are website-only.' }}>
+    {preview && createPortal(<PreviewControls onReset={reset} prompt={{ component: 'DitherProgress', slug: 'dither-progress', values: { value, size, animated, baseColor, fillColor, highlightColor }, notes: 'Keep any existing live progress binding for `value`.' }}>
       <div className="preview-settings">
         <PreviewThemeControl value={theme} onChange={setTheme} />
         <label>Progress <output>{value}%</output><input aria-label="Progress" type="range" min="0" max="100" value={value} onChange={event => { setPlaying(false); setValue(Number(event.target.value)) }} /></label>

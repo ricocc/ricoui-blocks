@@ -53,7 +53,7 @@ export default function ContributionGraphPreview() {
       @media(prefers-reduced-motion:reduce){.cg-preview>section{transition:none}}
     `}</style>
     <ContributionGraph data={data} endDate="2026-11-03" style={colors} />
-    {preview && createPortal(<PreviewControls prompt={{ component: 'ContributionGraph', source: 'registry/contribution-graph.tsx', values: { style: colors ?? {} }, notes: selected === 0 ? 'Use the component default theme colors. Preserve the existing contribution data and date range.' : 'Apply these CSS variables through the style prop. Preserve the existing contribution data and date range.' }} onReset={() => setSelected(0)}><div className="cg-palette" role="radiogroup" aria-label="预览配色">
+    {preview && createPortal(<PreviewControls prompt={{ component: 'ContributionGraph', slug: 'contribution-graph', values: { style: colors ?? {} }, notes: selected === 0 ? 'Remove palette overrides from `style` to restore the default colors.' : 'Merge the palette variables into the existing `style`.' }} onReset={() => setSelected(0)}><div className="cg-palette" role="radiogroup" aria-label="预览配色">
       {palettes.map((item, index) => <button key={item.name} type="button" role="radio"
         aria-label={item.name} aria-checked={selected === index} title={item.name}
         tabIndex={selected === index ? 0 : -1} style={{ '--swatch': item.ink } as CSSProperties}

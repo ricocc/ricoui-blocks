@@ -15,7 +15,7 @@ export default function FileOrganizerPreview() {
   useEffect(() => { setPreview(root.current?.closest<HTMLElement>('.detail-preview') ?? null) }, [])
   return <div ref={root} className="mx-auto w-full max-w-[540px]">
     <FileOrganizer key={revision} items={items} title={title} interactionMode={interactionMode} open={open} onOpenChange={setOpen} />
-    {preview && createPortal(<PreviewControls prompt={{ component: 'FileOrganizer', source: 'registry/file-organizer.tsx', values: { title, items, interactionMode, defaultOpen: open }, notes: 'defaultOpen matches the current expanded state. For controlled usage, use open with onOpenChange and React state instead.' }} onReset={() => { setRevision(value => value + 1); setOpen(false); setInteractionMode('all'); setTitle('Projects'); setLabels(['Roadmap', 'Guidelines', 'Launch Plan']) }}>
+    {preview && createPortal(<PreviewControls prompt={{ component: 'FileOrganizer', slug: 'file-organizer', values: { title, items, interactionMode, defaultOpen: open }, notes: 'For controlled usage, set `open` via its existing state.' }} onReset={() => { setRevision(value => value + 1); setOpen(false); setInteractionMode('all'); setTitle('Projects'); setLabels(['Roadmap', 'Guidelines', 'Launch Plan']) }}>
       <div className="preview-settings">
         <label>Click behavior<select aria-label="Click behavior" value={interactionMode} onChange={event=>{setInteractionMode(event.target.value as 'all' | 'single');setOpen(false)}}><option value="all">All folders</option><option value="single">Single folder</option></select></label>
         <label>Back folder<input value={title} maxLength={40} onChange={event => setTitle(event.target.value)} /></label>

@@ -22,7 +22,7 @@ export default function FlipSwitchPreview() {
   return <div ref={root} className="flip-switch-preview">
     <FlipSwitch aria-label="Power" checked={checked} onCheckedChange={setChecked} disabled={disabled} size={size} baseColor={baseColor} offColor={offColor} onColor={onColor} showRays={showRays}/>
     <span className="flip-switch-state" data-checked={checked} aria-hidden="true">{checked?'ON':'OFF'}</span>
-    {preview&&createPortal(<PreviewControls prompt={{component:'FlipSwitch',source:'registry/flip-switch.tsx',values:{defaultChecked:checked,disabled,size,baseColor,offColor,onColor,showRays},notes:'Use checked and onCheckedChange with React state for controlled usage. The preview background theme and ON/OFF caption belong to the website.'}} onReset={()=>{setChecked(false);setDisabled(false);setShowRays(true);setSize(330);setTheme('light');setBaseColor('#0955ff');setOffColor('#ff8619');setOnColor('#ffda00')}}>
+    {preview&&createPortal(<PreviewControls prompt={{component:'FlipSwitch',slug:'flip-switch',values:{defaultChecked:checked,disabled,size,baseColor,offColor,onColor,showRays},notes:'For controlled usage, set `checked` via its existing state.'}} onReset={()=>{setChecked(false);setDisabled(false);setShowRays(true);setSize(330);setTheme('light');setBaseColor('#0955ff');setOffColor('#ff8619');setOnColor('#ffda00')}}>
       <div className="preview-settings">
         <PreviewThemeControl value={theme} onChange={setTheme}/>
         <label className="checkbox-label"><input type="checkbox" checked={checked} onChange={event=>setChecked(event.target.checked)}/>Switched on</label>
